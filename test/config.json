@@ -1,0 +1,5 @@
+{
+	"CONTAINER_NAME" : "<containername>",
+    "STORAGE_NAME": "<storageaccount>",
+    "STORAGE_KEY": "<key>"
+}
