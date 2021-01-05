@@ -1,6 +1,7 @@
 import nconf from 'nconf';
 import assert from 'assert';
 import fs from 'fs';
+import path from 'path';
 import crypto from 'crypto';
 import now from 'performance-now';
 import azure from 'azure-storage';
@@ -9,16 +10,16 @@ import uuid from 'node-uuid';
 
 describe('Time of Uploads single threaded', function () {
 	var start, end, totalTime;
-	let configFile = __dirname + '/config.1.json';
+	let configFile = 'config.json';
 	console.log('using file: ' + configFile);
 
 	var blobService;
 
-	nconf.env().file({ file: configFile, search: true });
-	
-	let containerName = nconf.get("CONTAINER_NAME");
-	let accountName = nconf.get("STORAGE_NAME");
-	let accountKey = nconf.get("STORAGE_KEY");
+	let env = nconf.env().file({ file: configFile, search: true, dir: '..' });
+
+	var containerName = env.get("CONTAINER_NAME");
+	var accountName = env.get("STORAGE_NAME");
+	var accountKey = env.get("STORAGE_KEY");
 
 	let warmupFile = 'filewarmup.tst';
 	let testFile = 'testFile.tst';
@@ -140,7 +141,7 @@ describe('Time of Uploads single threaded', function () {
 
 
 function callIt(blobService, containerName, blobName, fileName, ptc, done) {
-	var uploadOptions = { 'parallelOperationThreadCount': ptc };
+	var uploadOptions = { parallelOperationThreadCount: ptc, storeBlobContentMD5: false };
 	blobService.createBlockBlobFromLocalFile(containerName, blobName, fileName, uploadOptions, function (error2) {
 		assert.equal(error2, null);
 		blobService.removeAllListeners('sendingRequestEvent');
