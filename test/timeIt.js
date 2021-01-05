@@ -141,7 +141,7 @@ describe('Time of Uploads single threaded', function () {
 
 
 function callIt(blobService, containerName, blobName, fileName, ptc, done) {
-	var uploadOptions = { 'parallelOperationThreadCount': ptc };
+	var uploadOptions = { parallelOperationThreadCount: ptc, storeBlobContentMD5: false };
 	blobService.createBlockBlobFromLocalFile(containerName, blobName, fileName, uploadOptions, function (error2) {
 		assert.equal(error2, null);
 		blobService.removeAllListeners('sendingRequestEvent');
